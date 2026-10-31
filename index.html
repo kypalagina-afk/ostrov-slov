@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#142b30">
+<title>Пиксель: остров слов</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;height:100%;overflow:hidden;background:#142b30;font:15px/1.45 system-ui,-apple-system,'Segoe UI',sans-serif;color:#193638}button,input{font:inherit}button{cursor:pointer;touch-action:manipulation}button:focus-visible,input:focus-visible{outline:3px solid #f9b54d;outline-offset:3px}[hidden]{display:none!important}#world{width:100%;height:100%;display:block;touch-action:none}.hud{position:fixed;inset:0;pointer-events:none}.hud button{pointer-events:auto}.top{display:flex;justify-content:space-between;gap:10px;padding:18px}.logo{font-weight:950;color:white;letter-spacing:.03em;text-shadow:0 2px #163b42}.logo small{display:block;font-size:10px;letter-spacing:.17em;color:#b7e0d2}.money{display:flex;gap:8px;align-items:start}.chip,.iconbtn{background:#173c42ed;color:#fff7d5;border:1px solid #79a29b60;box-shadow:0 3px 0 #0b272c;border-radius:12px;padding:9px 13px;font-weight:800}.iconbtn{color:white}.quest{position:absolute;top:88px;left:18px;background:#fff9e9ef;border:2px solid #ebefce;border-radius:16px;padding:12px 16px;width:260px;box-shadow:0 4px 0 #214d4930}.quest .eyebrow{font-size:10px;letter-spacing:.13em;font-weight:850;color:#5c7b6c}.quest strong{display:block;font-size:16px;margin:3px 0}.quest p{font-size:12px;margin:4px 0;color:#547069}.progress{height:5px;border-radius:5px;background:#dde4cc;margin-top:10px;overflow:hidden}.progress div{height:100%;background:#649e66}.keys{position:absolute;bottom:21px;left:22px;color:#e1f4ec;font-size:12px;background:#153b40bb;border-radius:10px;padding:9px 13px}.bottom-actions{position:absolute;bottom:22px;right:22px;display:flex;align-items:end;gap:12px;pointer-events:auto}.action{background:#ffe5a6;border:2px solid #81582d;color:#533b24;border-radius:18px;padding:12px 20px;font-weight:850;box-shadow:0 5px 0 #81582d;min-height:55px}.action.jump{background:#c5eeb0;border-color:#48734e;box-shadow:0 5px 0 #48734e;color:#2f543b;min-width:85px}.action:active{transform:translateY(3px);box-shadow:none}.action:disabled{opacity:.45}#nearby{position:absolute;bottom:100px;right:22px;max-width:250px;color:white;background:#143b40d9;padding:8px 12px;border-radius:10px;font-size:12px;text-align:right}#joystick{display:none;position:absolute;bottom:25px;left:22px;width:118px;height:118px;border:2px solid #e8fff04d;background:#143f4966;border-radius:50%;pointer-events:auto;touch-action:none}#stick{width:48px;height:48px;position:absolute;left:33px;top:33px;border-radius:50%;background:#e9f9dcbb;border:3px solid #fff8;box-shadow:0 3px 8px #153c4644;pointer-events:none}#toast{position:absolute;left:50%;bottom:105px;transform:translateX(-50%);padding:12px 18px;background:#fff6dc;border:2px solid #e3bd73;border-radius:14px;box-shadow:0 4px 0 #143b4044;text-align:center;font-weight:750;max-width:440px;width:max-content;pointer-events:none}#challenge{position:absolute;top:89px;left:50%;transform:translateX(-50%);width:min(440px,calc(100% - 32px));background:#fff9e9f5;border:2px solid #ddd0a8;border-radius:17px;box-shadow:0 5px 0 #294b4544;padding:13px 17px;text-align:center;pointer-events:auto}#challenge .label{font-size:10px;letter-spacing:.12em;color:#6a7d61;font-weight:900}#challenge h2{font-size:24px;margin:3px 0}#challenge p{font-size:12px;margin:5px 0;color:#4d6c60}#challenge button{border:0;background:#e4e9d5;color:#4b6656;border-radius:7px;padding:4px 10px;font-size:12px}.panel-mask{position:fixed;inset:0;background:#092d38aa;backdrop-filter:blur(5px);display:grid;place-items:center;padding:18px;z-index:5}.panel{background:#fff9e9;border:3px solid #e2d5b0;box-shadow:0 8px 0 #0f3035;border-radius:24px;padding:27px;width:min(650px,100%);max-height:88dvh;overflow:auto;position:relative}.panel h1{font-size:clamp(28px,6vw,40px);line-height:1.1;letter-spacing:-.035em;margin:10px 0 14px}.panel h2{font-size:26px;margin:3px 0 14px}.panel p{color:#4a6c62}.panel .eyebrow{font-size:10px;letter-spacing:.17em;color:#63916f;font-weight:900}.close{position:absolute;top:13px;right:13px;border:0;background:#e3e8d6;border-radius:10px;width:34px;height:34px;font-weight:800}.primary{background:#c4e99c;border:2px solid #3d664d;box-shadow:0 4px 0 #3d664d;border-radius:12px;color:#264738;font-weight:850;padding:13px 18px;width:100%;margin-top:12px}.secondary{background:#e7e9d7;border:1px solid #c9d4b9;color:#3c6152;border-radius:10px;padding:9px 12px;font-weight:750}.hero-pet{text-align:center;font-size:62px;background:#e7efd6;border-radius:17px;padding:12px;margin:14px 0}.features{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:18px 0}.features>div{background:#ecebd9;border-radius:11px;padding:10px 12px;font-size:12px}.features b{display:block;font-size:14px}.shop-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:17px}.item{background:#edeedc;border:2px solid #dadfc8;border-radius:15px;padding:14px}.item.owned{border-color:#8db67c}.item .art{font-size:35px;display:block;margin-bottom:5px}.item strong{display:block}.item p{font-size:12px;margin:4px 0 8px}.item button{width:100%;font-size:13px}.notebook{display:grid;gap:7px}.word-row{display:flex;justify-content:space-between;align-items:center;background:#ecefdc;border-radius:10px;padding:10px 12px;gap:10px}.word-row small{font-size:11px;color:#617461}.word-row b{font-size:17px}mark{background:#ffe1a0;color:#81551d;border-radius:3px}.input{display:block;width:100%;font-size:24px;padding:12px;border:2px solid #becdae;border-radius:12px;background:white;color:#244a3c;margin:12px 0}.letters{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin:13px 0}.letters button{background:#fff;border:2px solid #a8ba94;border-radius:9px;box-shadow:0 3px 0 #a8ba94;color:#2e503d;width:40px;height:43px;font-size:21px;font-weight:800}.letters button:disabled{opacity:.25}.assembled{min-height:49px;border-bottom:2px dashed #b8c9a2;font-size:27px;font-weight:850;letter-spacing:2px;text-align:center;overflow-wrap:anywhere}.feedback{padding:12px;border-radius:12px;background:#e1edcf;color:#3b633f;margin:12px 0;font-size:14px}.feedback.bad{background:#ffe6bb;color:#7e5625}.row{display:flex;gap:8px}.row>*{flex:1}.instructions{font-size:13px}.instructions li{margin:7px 0}.saving{font-size:11px;color:#829684;position:absolute;bottom:8px;left:50%;transform:translateX(-50%);white-space:nowrap}.route-badge{background:#e3edce;padding:7px 12px;border-radius:10px;display:inline-block;font-size:12px;font-weight:750}@media(pointer:coarse){#joystick{display:block}.keys{display:none}.bottom-actions{bottom:29px;right:18px}.action{padding:13px 15px;min-width:72px}.bottom-actions{gap:9px}#nearby{bottom:100px;right:18px;max-width:180px}#toast{bottom:165px;max-width:calc(100% - 36px)}}@media(max-width:600px){.top{padding:12px}.logo{font-size:14px}.logo small{font-size:8px}.chip,.iconbtn{padding:8px 10px;font-size:12px}.money{gap:5px}.quest{top:69px;left:12px;width:205px;padding:10px 12px}.quest strong{font-size:14px}.quest p{font-size:11px}.panel{padding:23px 18px}.shop-grid{gap:8px}.item{padding:11px}.item strong{font-size:13px}#challenge{top:70px}.saving{display:none}.features>div{padding:9px}.panel-mask{padding:12px}}@media(max-height:500px){.quest{top:62px;padding:8px 12px}.quest p{display:none}.panel{max-height:94dvh}.top{padding:8px 12px}#challenge{top:59px;padding:8px}#challenge h2{font-size:20px}}
+@media(pointer:coarse) and (max-width:600px){#joystick{width:96px;height:96px;left:12px;bottom:25px}#stick{left:22px;top:22px}.bottom-actions{right:12px;gap:8px}.action{width:100px;min-width:0;padding:12px 6px;font-size:13px}.action.jump{width:72px;min-width:0;font-size:12px}.keys{display:none}}
+.context-action{position:absolute;bottom:110px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:9px;width:max-content;max-width:calc(100% - 32px);pointer-events:none}
+.context-action #nearby{position:static;max-width:280px;text-align:center;padding:7px 12px}
+.context-action .action{width:auto;min-width:180px;padding:14px 25px;font-size:16px;pointer-events:auto}
+.context-action .action:disabled{opacity:.65;cursor:default}
+.hud:has(.context-action:not([hidden])) #toast{bottom:250px}
+@media(pointer:coarse){.context-action{bottom:145px}.context-action .action{min-width:165px}.hud:has(.context-action:not([hidden])) #toast{bottom:280px}}
+@media(max-height:500px){.context-action{bottom:85px}.context-action .action{padding:10px 20px;min-height:46px}.context-action #nearby{font-size:11px;padding:5px 9px}}
+.outfit-preview{display:block;width:100%;height:140px;object-fit:contain;background:linear-gradient(#e4ead9,#f4efdc);border-radius:11px;margin-bottom:9px}
+.shop-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.item{min-width:0}.chip{white-space:nowrap}.money{flex-shrink:0}.logo{min-width:0}.action.jump{white-space:nowrap}
+@media(max-width:400px){.logo{font-size:12px}.logo small{font-size:7px;letter-spacing:.08em}.shop-grid{grid-template-columns:1fr}.item{display:grid;grid-template-columns:90px minmax(0,1fr);column-gap:12px;align-items:start}.item .outfit-preview,.item .art{grid-column:1;grid-row:1 / span 3;align-self:center;margin:0;height:126px}.item .art{display:grid;place-items:center}.item strong,.item p,.item button{grid-column:2}.item button{align-self:end}.jump-arrow{display:none}}
+</style>
+</head>
+<body>
+<canvas id="world" aria-label="Игровой остров. Передвижение: стрелки или WASD, прыжок: пробел, действие: E." tabindex="0"></canvas>
+<div class="hud">
+ <div class="top"><div class="logo">▦ ОСТРОВ СЛОВ<small>БЕГАЙ · ИССЛЕДУЙ · СОБИРАЙ</small></div><div class="money"><span class="chip" id="coins">◆ 0</span><button class="iconbtn" id="book" aria-label="Коллекция слов">📖</button><button class="iconbtn" id="help" aria-label="Как играть">?</button></div></div>
+ <div class="quest" id="quest"><div class="eyebrow">ПЕРВОЕ ПРИКЛЮЧЕНИЕ</div><strong id="questTitle">Найди Пикселя</strong><p id="questText">Подойди к коту у доски заданий.</p><div class="progress"><div id="progress" style="width:0%"></div></div></div>
+ <div id="challenge" hidden></div>
+ <div class="keys">WASD / стрелки — бегать &nbsp; Пробел — прыжок &nbsp; E — действие<br>Можно нажать на землю, чтобы идти туда.</div>
+ <div id="joystick" aria-label="Джойстик: проведи пальцем в нужную сторону"><div id="stick"></div></div>
+ <div class="context-action" id="contextAction" hidden><div id="nearby"></div><button class="action" id="interact">Задание ✨</button></div>
+ <div class="bottom-actions"><button class="action jump" id="jump" aria-label="Прыгнуть">Прыжок<span class="jump-arrow"> ↑</span></button></div>
+ <div id="toast" role="status" hidden></div><span class="saving" id="saveStatus">Прогресс сохраняется на этом устройстве</span>
+</div>
+<div class="panel-mask" id="modal" hidden><section class="panel" id="panel" role="dialog" aria-modal="true" aria-label="Игровое окно"></section></div>
+<script>
+'use strict';
+const WORDS = [
+ {w:'жюри',pattern:'ж[ю]ри',hint:'Группа людей, которая оценивает участников конкурса.',note:'После Ж здесь пишется Ю: жюри.'},
+ {w:'парашют',pattern:'п[а]р[а]ш[ю]т',hint:'Купол, который помогает человеку плавно спуститься после прыжка с самолёта.',note:'Запомни: парашют. После Ш здесь пишется Ю.'},
+ {w:'брошюра',pattern:'бр[о]ш[ю]ра',hint:'Небольшая книжка в мягкой обложке.',note:'Запомни О и Ю: брошюра.'},
+ {w:'искусство',pattern:'и[с]ку[сс]тво',hint:'Так называют живопись, музыку, театр и другие виды творчества одним словом.',note:'В начале одна С, после У — две С: искусство.'},
+ {w:'участвовать',pattern:'уча[с]твовать',hint:'Принимать участие в игре или конкурсе. Что делать?',note:'В сочетании СТ нет буквы В: участвовать.'},
+ {w:'чувствовать',pattern:'чу[в]ствовать',hint:'Испытывать радость, грусть, тепло или холод. Что делать?',note:'Не потеряй первую В: чувствовать.'},
+ {w:'маршрут',pattern:'м[а]ршру[т]',hint:'Заранее намеченный путь поездки или прогулки.',note:'В начале МА, на конце Т: маршрут.'},
+ {w:'карандаш',pattern:'к[а]р[а]нда[ш]',hint:'Предмет с грифелем, которым рисуют и пишут.',note:'Две буквы А в начале и Ш в конце: карандаш.'},
+ {w:'академия',pattern:'[а]к[а]демия',hint:'Высшее учебное или научное учреждение: например, художественная …',note:'В начале две А: академия.'},
+ {w:'газон',pattern:'г[а]зон',hint:'Участок земли с аккуратно подстриженной травой.',note:'В первом слоге А: газон.'},
+ {w:'сирень',pattern:'с[и]рень',hint:'Кустарник с душистыми гроздьями лиловых или белых цветов.',note:'В первом слоге И: сирень.'},
+ {w:'тетрадь',pattern:'т[е]тра[д]ь',hint:'Сшитые листы в клетку или линейку для школьных записей.',note:'В начале Е, перед мягким знаком Д: тетрадь.'},
+ {w:'молоток',pattern:'м[о]л[о]ток',hint:'Инструмент, которым забивают гвозди.',note:'Три буквы О: молоток.'},
+ {w:'коридор',pattern:'к[о]р[и]дор',hint:'Длинный проход внутри здания, соединяющий комнаты.',note:'В начале КО, затем РИ: коридор.'},
+ {w:'секунда',pattern:'с[е]кунда',hint:'Одна шестидесятая минуты.',note:'В первом слоге Е: секунда.'},
+ {w:'бордовый',pattern:'б[о]рдовый',hint:'Тёмный красный цвет. Какой?',note:'В первом слоге О: бордовый.'},
+ {w:'горизонт',pattern:'г[о]р[и]зонт',hint:'Воображаемая линия, где небо словно встречается с землёй.',note:'Сначала О, затем И: горизонт.'},
+ {w:'шедевр',pattern:'ш[е]девр',hint:'Выдающееся произведение, лучшее творение мастера.',note:'После Ш пишем Е: шедевр.'},
+ {w:'запечатлел',pattern:'з[а]п[е]ч[а]тлел',hint:'Сохранил на фотографии или картине: «Художник … этот момент».',note:'Запомни начало ЗА-ПЕ-ЧА и сочетание ТЛ: запечатлел.'},
+ {w:'аккуратный',pattern:'а[кк]ур[а]тный',hint:'Опрятный, всё делает тщательно и содержит вещи в порядке. Какой?',note:'Две К и А после Р: аккуратный.'},
+ {w:'рассказчик',pattern:'ра[сс]ка[з]чик',hint:'Человек, который рассказывает историю.',note:'Две С и сочетание ЗЧ: рассказчик.'}
+];
+const $=id=>document.getElementById(id),canvas=$('world'),ctx=canvas.getContext('2d');
+const KEY='pixel-island-adventure-v2';
+const initial=()=>({coins:0,earned:0,solved:0,routeStep:0,levels:WORDS.map(()=>0),errors:WORDS.map(()=>0),owned:['mint','cat'],outfit:'mint',pet:'cat',hat:false,petName:'Пиксель',collected:[],intro:false,gate1:false,gate2:false,x:360,y:490});
+let data=initial(),storageOK=true;
+try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&Array.isArray(d.levels)&&d.levels.length===21){data={...initial(),...d,levels:d.levels.map(x=>Math.max(0,Math.min(3,Number(x)||0))),errors:WORDS.map((_,i)=>Math.max(0,Number(d.errors?.[i])||0)),coins:Math.max(0,Number(d.coins)||0),earned:Math.max(0,Number(d.earned)||0),owned:Array.isArray(d.owned)?d.owned.filter(x=>typeof x==='string'):['mint','cat'],collected:Array.isArray(d.collected)?d.collected:[]};}}catch(e){storageOK=false;}
+data.routeStep=Math.max(0,Math.floor(Number(data.routeStep)||0));
+const player={x:360,y:490,z:0,vz:0,facing:1,step:0,safeX:360,safeY:490};
+let width=0,height=0,dpr=1,camera={x:0,y:0},keys={},joy={x:0,y:0},target=null,near=null,active=null,time=0,last=0,toastUntil=0,wasMoving=false,particles=[],petPos={x:330,y:510},modalOpen=false,focusBefore=null,prevWord=-1;
+const WORLD={w:1900,h:1400};
+const land=[{x:90,y:130,w:830,h:1050},{x:920,y:620,w:180,h:90},{x:1100,y:230,w:660,h:590},{x:800,y:1110,w:580,h:85},{x:1310,y:960,w:440,h:330}];
+const platforms=[{x:980,y:890,w:84,h:76},{x:1130,y:935,w:80,h:76},{x:1130,y:1065,w:80,h:76}];
+const stops=[
+ {id:'pixel',x:440,y:360,name:'Пиксель',icon:'🐈',region:'main'},
+ {id:'wind',x:270,y:300,name:'Ветряная поляна',icon:'🪁',region:'main'},
+ {id:'butterfly',x:230,y:510,name:'Дом бабочек',icon:'🦋',region:'main'},
+ {id:'shell',x:210,y:850,name:'Ракушечный берег',icon:'🐚',region:'main'},
+ {id:'mushroom',x:370,y:1000,name:'Грибная тропа',icon:'🍄',region:'main'},
+ {id:'camp',x:570,y:1060,name:'Лесной привал',icon:'⛺',region:'main'},
+ {id:'crystal',x:710,y:800,name:'Кристальная поляна',icon:'💎',region:'main'},
+ {id:'sun',x:740,y:520,name:'Солнечный камень',icon:'☀️',region:'main'},
+ {id:'garden',x:1230,y:390,name:'Сад букв',icon:'🌷',region:'garden'},
+ {id:'bee',x:1390,y:300,name:'Пчелиный луг',icon:'🐝',region:'garden'},
+ {id:'cherry',x:1580,y:330,name:'Вишнёвый сад',icon:'🍒',region:'garden'},
+ {id:'rainbow',x:1630,y:510,name:'Радужная арка',icon:'🌈',region:'garden'},
+ {id:'lotus',x:1570,y:700,name:'Пруд лотосов',icon:'🪷',region:'garden'},
+ {id:'turtle',x:1350,y:700,name:'Черепаший берег',icon:'🐢',region:'garden'},
+ {id:'clover',x:1200,y:590,name:'Клеверная тропа',icon:'🍀',region:'garden'},
+ {id:'owl',x:1440,y:500,name:'Совиная почта',icon:'🦉',region:'garden'},
+ {id:'tower',x:1450,y:1030,name:'Башня памяти',icon:'🔮',region:'tower'},
+ {id:'moon',x:1630,y:1030,name:'Лунный маяк',icon:'🌙',region:'tower'},
+ {id:'star',x:1650,y:1170,name:'Звёздная поляна',icon:'⭐',region:'tower'},
+ {id:'comet',x:1510,y:1200,name:'Станция комет',icon:'☄️',region:'tower'},
+ {id:'crownStop',x:1390,y:1140,name:'Сокровищница',icon:'👑',region:'tower'}
+].map((s,i)=>({...s,kind:'task',word:i}));
+const stations=[...stops,
+ {id:'shop',x:235,y:675,name:'Лавка «Листик»',kind:'shop',icon:'🛍'},
+ {id:'gate1',x:865,y:665,name:'Мост в Сад букв',kind:'gate1'},
+ {id:'gate2',x:880,y:1145,name:'Дорога к Башне',kind:'gate2'},
+ {id:'chest',x:1170,y:975,name:'Сундук на платформе',kind:'chest',icon:'🎁'},
+ {id:'home',x:650,y:940,name:'Твой уголок',kind:'home',icon:'🏡'}];
+const items=[{id:'sunset',name:'Худи «Лисичка»',price:18,type:'outfit',icon:'🦊',desc:'Худи с ушками, светлый карман и высокие кеды.'},{id:'lavender',name:'Платье «Звёздная ночь»',price:24,type:'outfit',icon:'✨',desc:'Пышная юбка со звёздами, белые колготки и ботинки.'},{id:'fox',name:'Лисёнок-спутник',price:35,type:'pet',icon:'🦊',desc:'Будет бегать за тобой по острову.'},{id:'bunny',name:'Зайка-спутник',price:35,type:'pet',icon:'🐰',desc:'Длинные уши и быстрые лапки.'},{id:'crown',name:'Золотая корона',price:45,type:'hat',icon:'👑',desc:'Корона для искательницы слов.'},{id:'flowers',name:'Цветы у домика',price:20,type:'decor',icon:'🌻',desc:'Цветочная клумба в твоём уголке.'},{id:'fountain',name:'Фонтан желаний',price:55,type:'decor',icon:'⛲',desc:'Украшение рядом с домом.'},{id:'cat',name:'Кот Пиксель',price:0,type:'pet',icon:'🐈',desc:'Твой первый друг. Уже с тобой.'},{id:'mint',name:'Костюм путешественницы',price:0,type:'outfit',icon:'🌿',desc:'Комбинезон, полосатая футболка и маленький рюкзак.'}];
+const crystals=[{id:'c1',x:300,y:490},{id:'c2',x:380,y:590},{id:'c3',x:590,y:520},{id:'c4',x:740,y:760},{id:'c5',x:590,y:1000},{id:'c6',x:1270,y:400},{id:'c7',x:1550,y:600},{id:'c8',x:1620,y:1160},{id:'c9',x:1020,y:920},{id:'c10',x:1170,y:1090}];
+const trees=[{x:150,y:235},{x:810,y:265},{x:825,y:385},{x:1690,y:270}];
+const choiceSpots=[{x:315,y:535},{x:465,y:535},{x:615,y:535}];
+function save(){data.x=player.x;data.y=player.y;try{localStorage.setItem(KEY,JSON.stringify(data));}catch(e){storageOK=false;}$('saveStatus').textContent=storageOK?'Прогресс сохраняется на этом устройстве':'Браузер не сохраняет прогресс. Не закрывай вкладку.';updateHUD();}
+function toast(text,seconds=3){$('toast').textContent=text;$('toast').hidden=false;toastUntil=time+seconds;}
+function routeStop(){return stops[data.routeStep%stops.length];}
+function routeAvailable(s){return s.kind!=='task'||s.id===routeStop().id;}
+function gateReady(kind){return Math.max(data.routeStep,data.levels.filter(x=>x>0).length)>=(kind==='gate1'?8:16);}
+function routeAim(){
+ const stop=routeStop(),x=player.x,y=player.y;
+ if(active?.kind==='choice')return choiceSpots[1];
+ if(x>925&&x<1310&&y>1050&&stop.region!=='tower')return {x:780,y:1145};
+ if(x>920&&x<1100&&y<850&&stop.region!=='garden')return {x:880,y:665};
+ if(x>=1310&&y>=950&&stop.region!=='tower')return x>1380?{x:1340,y:1145}:{x:780,y:1145};
+ if(x>=1100&&y<850&&stop.region!=='garden')return Math.abs(y-665)>32?{x:1140,y:665}:{x:880,y:665};
+ if(stop.region==='garden'&&x<1100){if(!data.gate1)return stations.find(s=>s.id==='gate1');return x<925&&Math.abs(y-665)>32?{x:880,y:665}:{x:1140,y:665};}
+ if(stop.region==='tower'&&x<1310){if(!data.gate2)return stations.find(s=>s.id==='gate2');return x<925&&Math.abs(y-1145)>32?{x:850,y:1145}:{x:1380,y:1145};}
+ return stop;
+}
+function updateHUD(){
+ $('coins').textContent='◆ '+data.coins;
+ const stop=routeStop(),step=data.routeStep%21,mastered=data.levels.filter(l=>l===3).length;
+ $('progress').style.width=step/21*100+'%';
+ $('quest').querySelector('.eyebrow').textContent='ОСТАНОВКА '+(step+1)+'/21 · КРУГ '+(Math.floor(data.routeStep/21)+1);
+ $('questTitle').textContent=stop.icon+' '+stop.name;
+ $('questText').textContent=stop.region==='garden'&&!data.gate1?'Открой мост справа и беги по указателю.':stop.region==='tower'&&!data.gate2?'Открой нижний мост — впереди новый остров.':'Одно слово — и дальше в путь! По памяти: '+mastered+'/21.';
+}
+function finishStop(amount){
+ const word=WORDS[active.i].w,assisted=active.assisted;
+ data.solved++;data.routeStep++;active=null;
+ $('challenge').hidden=true;$('quest').hidden=false;
+ if(modalOpen)closePanel();
+ reward(assisted?2:amount);
+ toast(word+' — верно! +'+(assisted?2:amount)+' ◆. Дальше: '+routeStop().name,4);
+}
+function resize(){width=innerWidth;height=innerHeight;dpr=Math.min(devicePixelRatio||1,2);canvas.width=width*dpr;canvas.height=height*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);}
+addEventListener('resize',resize);resize();
+function pointIn(p,r,pad=0){return p.x>=r.x+pad&&p.x<=r.x+r.w-pad&&p.y>=r.y+pad&&p.y<=r.y+r.h-pad;}
+function onLand(x,y){const p={x,y};return land.some((r,i)=>{if(i===1&&!data.gate1)return false;if(i===3&&!data.gate2)return false;return pointIn(p,r);})||platforms.some(r=>pointIn(p,r,2));}
+function moveBlocked(x,y){if(x<100||y<140||x>1760||y>1290)return true;if(!data.gate1&&(x>840&&x<1110&&y>610&&y<720||x>=1100&&y<=820))return true;if(!data.gate2&&(x>825&&x<1320&&y>1100&&y<1205||x>=1310&&y>=960))return true;return false;}
+function respawn(){player.x=player.safeX;player.y=player.safeY;player.z=0;player.vz=0;target=null;petPos={x:player.x-30,y:player.y+20};toast('Плюх! Вернулись на берег. Монеты на месте.');}
+function jump(){if(modalOpen)return;if(player.z===0){player.vz=410;player.z=1;burst(player.x,player.y,'#e4e9ba',7);}}
+function burst(x,y,color,n=16){for(let i=0;i<n;i++)particles.push({x,y,vx:(Math.random()-.5)*150,vy:-Math.random()*130-35,life:.7,color});}
+function reward(n,x=player.x,y=player.y){data.coins+=n;data.earned+=n;burst(x,y,'#ffe08a',24);save();}
+function nearest(){const s=stations.filter(routeAvailable).map(s=>({...s,d:Math.hypot(s.x-player.x,s.y-player.y)})).sort((a,b)=>a.d-b.d)[0];return s&&s.d<(s.kind==='task'?85:112)?s:null;}
+function interact(){if(modalOpen)return;if(active?.kind==='choice'){const index=choiceSpots.findIndex(p=>Math.abs(player.x-p.x)<=36&&player.y>=p.y-24&&player.y<=p.y+36);if(index>=0)answerChoice(index);else toast('Встань на плиту с нужной буквой, чтобы выбрать её.');return;}const s=nearest();if(!s){toast('Подойди к Пикселю, магазину или сундуку.');return;}if(active){toast('Сначала закончи задание или нажми «Позже».');return;}if(s.kind==='shop')shop();else if(s.kind==='task')startTask(s);else if(s.kind==='gate1'||s.kind==='gate2'){const req=s.kind==='gate1'?8:16;if(!gateReady(s.kind)){toast(`Пройди ${req} остановок маршрута. Сейчас ${Math.min(data.routeStep,req)}.`);return;}data[s.kind]=true;save();toast('Мост построен! Беги на новый остров.');burst(s.x,s.y,'#d8f2a8',35);}else if(s.kind==='chest'){if(data.collected.includes('chest'))toast('Сундук уже открыт. Впереди ещё задания и покупки!');else{data.collected.push('chest');reward(18);toast('Сундук найден! +18 монет ◆');}}else if(s.kind==='home')homePanel();}
+function updateActionUI(){
+ const choosing=active?.kind==='choice';
+ near=nearest();
+ const group=$('contextAction'),button=$('interact');
+ group.hidden=modalOpen||(!choosing&&!near);
+ if(group.hidden)return;
+ if(choosing){
+  const onTile=choiceSpots.some(p=>Math.abs(player.x-p.x)<=36&&player.y>=p.y-24&&player.y<=p.y+36);
+  button.textContent='Выбрать ✓';
+  button.disabled=!onTile;
+  $('nearby').textContent=onTile?'Выбери букву на этой плите':'Встань на плиту с нужной буквой';
+ }else{
+  button.disabled=false;
+  button.textContent=near.kind==='task'?'Задание ✨':near.kind==='shop'?'Магазин 🛍':near.kind==='chest'?'Открыть 🎁':near.kind.startsWith('gate')?'Открыть мост':'Домой 🏡';
+  $('nearby').textContent=near.name;
+ }
+}
+function pickWord(){return routeStop().word;}
+function marked(w){return w.pattern.replace(/\[([^\]]+)\]/g,'<mark>$1</mark>');}
+function startTask(station){if(!routeAvailable(station)){toast('Следующая остановка: '+routeStop().name);return;}const i=station.word;active={i,kind:'',station:station.id,assisted:false,attempts:0};if(data.levels[i]===0)choiceTask();else if(data.levels[i]===1)assemblyTask();else recallTask();}
+function choiceTask(){active.kind='choice';const w=WORDS[active.i];const matches=[...w.pattern.matchAll(/\[([^\]]+)\]/g)],match=matches[Math.floor(Math.random()*matches.length)],correct=match[1];const variants=[correct];const substitutions={'а':'о','о':'а','е':'и','и':'е','ю':'у','с':'сс','сс':'с','в':'','кк':'к','ш':'ж','д':'т','т':'д','з':'с'};let wrong=substitutions[correct]??'а';variants.push(wrong);for(const v of ['и','о','а','е','у','с','к'])if(variants.length<3&&!variants.includes(v))variants.push(v);active.options=variants.map(v=>({letter:v||'—',value:v})).sort(()=>Math.random()-.5);active.correct=correct;
+ // Выводим ровно один пропуск, сохраняя остальные части исходного слова.
+ let taken=false;active.mask=w.pattern.replace(/\[([^\]]+)\]/g,(full,part,offset)=>{if(offset===match.index&&!taken){taken=true;return '□'.repeat(part.length);}return part;});
+ const stop=stops.find(s=>s.id===active.station),bounds=stop.region==='main'?{left:215,right:790,top:270,bottom:1100}:stop.region==='garden'?{left:1225,right:1635,top:300,bottom:745}:{left:1435,right:1625,top:1060,bottom:1235};
+ const anchor={x:Math.max(bounds.left,Math.min(bounds.right,stop.x)),y:Math.max(bounds.top,Math.min(bounds.bottom,stop.y+80))};
+ if(stop.id==='butterfly'||stop.id==='crystal')anchor.y=stop.y-80;
+ choiceSpots.splice(0,3,...[-1,0,1].map(i=>({x:anchor.x+i*85,y:anchor.y})));
+ target=null;$('quest').hidden=true;$('challenge').hidden=false;
+ $('challenge').innerHTML='<span class="label">ОСТАНОВКА '+(stop.word+1)+'/21 · +8 МОНЕТ</span><h2>'+active.mask+'</h2><p>Встань на плиту с нужной буквой и нажми «Выбрать».</p><button id="later">Позже</button>';
+ $('later').onclick=cancelTask;
+}
+function answerChoice(index){if(active?.kind!=='choice')return;const w=WORDS[active.i];if(active.options[index].value!==active.correct){active.assisted=true;active.attempts++;data.errors[active.i]++;save();burst(player.x,player.y,'#efab83',10);toast('Вспомни: '+w.w+'. '+w.note,5);$('challenge').querySelector('h2').textContent=w.w;return;}if(!active.assisted)data.levels[active.i]=Math.max(1,data.levels[active.i]);finishStop(8);}
+function cancelTask(){active=null;$('challenge').hidden=true;$('quest').hidden=false;toast('Задание подождёт. Можно побегать и исследовать остров.');}
+function openPanel(html){focusBefore=document.activeElement;modalOpen=true;keys={};joy={x:0,y:0};target=null;resetStick();$('panel').innerHTML=html;$('modal').hidden=false;$('panel').querySelector('button,input')?.focus({preventScroll:true});}
+function closePanel(){modalOpen=false;$('modal').hidden=true;if(active&&active.kind!=='choice'){active=null;$('quest').hidden=false;}if(focusBefore?.isConnected)focusBefore.focus({preventScroll:true});else canvas.focus({preventScroll:true});}
+function bindClose(){document.querySelectorAll('[data-close]').forEach(b=>b.onclick=closePanel);}
+function bindWordHint(){
+ const button=$('showWord'),hint=$('wordHint'),label=button.textContent;
+ button.setAttribute('aria-controls','wordHint');
+ button.setAttribute('aria-expanded','false');
+ button.onclick=()=>{
+  const show=hint.hidden;
+  if(show){const w=WORDS[active.i];active.assisted=true;hint.innerHTML=`<b>${marked(w)}</b><br>${w.note}`;}
+  hint.hidden=!show;
+  button.textContent=show?'Скрыть подсказку':label;
+  button.setAttribute('aria-expanded',String(show));
+ };
+}
+function assemblyTask(){active.kind='assembly';active.letters=WORDS[active.i].w.split('').map((l,i)=>({l,id:i})).sort(()=>Math.random()-.5);active.used=[];renderAssembly();}
+function renderAssembly(){const w=WORDS[active.i];openPanel(`<button class="close" data-close aria-label="Закрыть">✕</button><div class="eyebrow">МАСТЕРСКАЯ СЛОВ · +10 МОНЕТ</div><h2>Собери слово</h2><p>${w.hint}</p><div class="assembled" id="assembled" aria-live="polite">${active.used.map(id=>w.w[id]).join('')||'…'}</div><div class="letters">${active.letters.map(({l,id})=>`<button data-letter="${id}" aria-label="Буква ${l}">${l}</button>`).join('')}</div><div class="row"><button class="secondary" id="undo">← Убрать букву</button><button class="secondary" id="showWord">Показать слово</button></div><div id="wordHint" class="feedback" hidden></div><div id="result" role="status"></div><button class="primary" id="checkAssembly">Открыть сундук →</button>`);bindClose();document.querySelectorAll('[data-letter]').forEach(b=>b.onclick=()=>{active.used.push(Number(b.dataset.letter));b.disabled=true;$('assembled').textContent=active.used.map(id=>w.w[id]).join('');});$('undo').onclick=()=>{const id=active.used.pop();if(id!==undefined)$(`panel`).querySelector(`[data-letter="${id}"]`).disabled=false;$('assembled').textContent=active.used.map(id=>w.w[id]).join('')||'…';};bindWordHint();$('checkAssembly').onclick=()=>checkPanelAnswer(active.used.map(id=>w.w[id]).join(''),10);}
+function recallTask(){active.kind='recall';const w=WORDS[active.i];openPanel(`<button class="close" data-close aria-label="Закрыть">✕</button><div class="eyebrow">ЗАКЛИНАНИЕ ПАМЯТИ · +14 МОНЕТ</div><h2>Открой волшебный сундук</h2><p>${w.hint}</p><form id="spellForm" autocomplete="off"><label for="spell">Напиши слово-заклинание:</label><input class="input" id="spell" lang="ru" autocomplete="off" autocorrect="off" spellcheck="false" autocapitalize="none" enterkeyhint="done"><div id="wordHint" class="feedback" hidden></div><div id="result" role="status"></div><button class="primary" type="submit">Произнести заклинание ✨</button></form><button class="secondary" id="showWord" style="width:100%;margin-top:12px">Подсказка</button>`);bindClose();$('spellForm').onsubmit=e=>{e.preventDefault();checkPanelAnswer($('spell').value.trim().toLocaleLowerCase('ru-RU'),14);};bindWordHint();$('spell').focus({preventScroll:true});}
+function checkPanelAnswer(value,amount){const w=WORDS[active.i];if(!value){toast('Сначала составь или напиши слово.');return;}if(value!==w.w){if(!active.attempts)data.errors[active.i]++;active.attempts++;active.assisted=true;if(active.kind==='recall')data.levels[active.i]=Math.min(data.levels[active.i],2);save();$('result').className='feedback bad';$('result').innerHTML='Правильно: <b>'+marked(w)+'</b>.<br>'+w.note+'<br>Попробуй ещё раз. Сундук подождёт.';return;}if(!active.assisted)data.levels[active.i]=Math.min(3,data.levels[active.i]+1);else if(active.kind==='recall')data.levels[active.i]=Math.min(data.levels[active.i],2);finishStop(amount);}
+function shop(){openPanel(`<button class="close" data-close aria-label="Закрыть магазин">✕</button><div class="eyebrow">ЛАВКА «ЛИСТИК»</div><h2>Что возьмём в приключение?</h2><p>У тебя <b>${data.coins} монет ◆</b>. Покупки остаются с тобой.</p><div class="shop-grid">${items.map(item=>{const own=data.owned.includes(item.id),equipped=item.type==='outfit'?data.outfit===item.id:item.type==='pet'?data.pet===item.id:item.type==='hat'?data.hat:own;return `<div class="item ${own?'owned':''}">${item.type==='outfit'?`<canvas class="outfit-preview" data-outfit="${item.id}" width="220" height="170" aria-label="${item.name}"></canvas>`:`<span class="art">${item.icon}</span>`}<strong>${item.name}</strong><p>${item.desc}</p><button class="secondary" data-buy="${item.id}" ${equipped?'disabled':''}>${equipped?'Выбрано ✓':own?'Надеть / выбрать':`${item.price} монет ◆`}</button></div>`;}).join('')}</div>`);bindClose();document.querySelectorAll('[data-outfit]').forEach(c=>drawCharacter(c.getContext('2d'),110,151,{outfit:c.dataset.outfit,scale:1.65,hat:false}));document.querySelectorAll('[data-buy]').forEach(b=>b.onclick=()=>buy(b.dataset.buy));}
+function buy(id){const item=items.find(i=>i.id===id);if(!item)return;const own=data.owned.includes(id);if(!own){if(data.coins<item.price){toast(`Не хватает ${item.price-data.coins} монет. Выполни задания или найди кристаллы!`);return;}data.coins-=item.price;data.owned.push(id);}if(item.type==='outfit')data.outfit=id;if(item.type==='pet')data.pet=id;if(item.type==='hat')data.hat=true;save();shop();toast(own?'Выбрано!':`${item.name} — теперь твоё!`);}
+function notebook(){openPanel(`<button class="close" data-close aria-label="Закрыть коллекцию">✕</button><div class="eyebrow">ТВОЯ КОЛЛЕКЦИЯ</div><h2>Слова-сокровища</h2><p>○ Новое → ◆ Выбрала букву → ◆◆ Собрала → ★ Написала по памяти.</p><div class="notebook">${WORDS.map((w,i)=>`<div class="word-row"><b>${marked(w)}</b><small>${['○ Новое','◆ Буква найдена','◆◆ Собрано','★ По памяти'][data.levels[i]]}</small></div>`).join('')}</div><p style="font-size:12px">После ошибки слово остаётся для повторения. Ответ с открытой подсказкой не продвигает уровень.</p>`);bindClose();}
+function homePanel(){openPanel(`<button class="close" data-close aria-label="Закрыть">✕</button><div class="eyebrow">ТВОЙ УГОЛОК</div><div class="hero-pet">${data.owned.includes('flowers')?'🌻':''}🏡${data.owned.includes('fountain')?'⛲':''}</div><h2>Дом после приключений</h2><p>Здесь появляются украшения из лавки. Сейчас у тебя ${data.coins} монет.</p><p>Слов открыто: ${data.levels.filter(x=>x>0).length}/21. Написано по памяти: ${data.levels.filter(x=>x===3).length}/21.</p><button class="primary" data-close>Обратно на остров →</button>`);bindClose();}
+function help(){openPanel(`<button class="close" data-close aria-label="Закрыть справку">✕</button><div class="eyebrow">КАК ИГРАТЬ</div><h2>Твой остров, твои приключения</h2><ul class="instructions"><li><b>Бегай:</b> джойстик слева на телефоне; стрелки / WASD на компьютере. Можно нажать на землю.</li><li><b>Прыгай:</b> кнопка «Прыжок» или пробел. Прыжок помогает перескочить воду между платформами и огненных слизней.</li><li><b>Действуй:</b> подойди к коту, лавке, сундуку или мосту и нажми жёлтую кнопку / E.</li><li><b>Путешествуй:</b> на каждой остановке одно короткое задание. Закончи его и беги к следующей отметке. На новом круге знакомые слова станут сложнее.</li><li><b>Покупай:</b> костюмы, питомцев и украшения в лавке слева от площади.</li><li><b>Исследуй:</b> 8 пройденных остановок открывают мост в Сад букв, 16 — дорогу к Башне. На маршруте 21 остановка: одно задание — и дальше в путь. Повторение начинается на следующем круге. На платформах в воде спрятан сундук.</li></ul><p class="instructions"><b>Для взрослого:</b> все 21 слово с карточки. Неверные ответы возвращаются; подсказка уменьшает награду и не засчитывает самостоятельное освоение. Отметка «по памяти» означает один успешный ответ без образца. Перед диктантом полезно проверить слова письменно на бумаге. Прогресс хранится только в этом браузере.</p><button class="secondary" id="reset">Сбросить игру…</button><div id="resetArea"></div>`);bindClose();$('reset').onclick=()=>{$('resetArea').innerHTML='<p>Удалить монеты, покупки и все достижения?</p><button class="secondary" id="confirmReset">Да, начать с нуля</button>';$('confirmReset').onclick=()=>{data=initial();Object.assign(player,{x:360,y:490,z:0,vz:0,safeX:360,safeY:490});active=null;$('challenge').hidden=true;$('quest').hidden=false;save();closePanel();welcome();};};}
+function welcome(){openPanel(`<div class="eyebrow">ПРИКЛЮЧЕНИЕ ДЛЯ ОДНОГО ИГРОКА</div><h1>Маленький остров.<br>Большие приключения.</h1><div class="hero-pet">🌴 🐈 💎</div><p>Я Пиксель! На наших островах есть сокровища, магазин и волшебные сундуки. Ключи к ним — спрятанные буквы.</p><div class="features"><div><b>↗ Бегай и прыгай</b>Площадки, мосты, тайники</div><div><b>◆ Собирай монеты</b>Решай задания у Пикселя</div><div><b>🛍 Выбирай покупки</b>Костюмы и питомцы</div><div><b>🌉 Открывай острова</b>21 остановка: по слову на каждой</div></div><button class="primary" id="play">Отправиться на остров →</button><p style="font-size:11px;text-align:center;margin-bottom:0">Телефон: джойстик слева, прыжок и действие справа.</p>`);$('play').onclick=()=>{data.intro=true;save();closePanel();toast('Иди к Пикселю: первое слово, затем новая остановка!' ,5);};}
+// Рисуем игровой мир без внешних изображений и библиотек.
+function rr(x,y,w,h,r,fill,stroke){ctx.beginPath();ctx.roundRect(x,y,w,h,r);if(fill){ctx.fillStyle=fill;ctx.fill();}if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=2;ctx.stroke();}}
+function ellipse(x,y,rx,ry,color){ctx.fillStyle=color;ctx.beginPath();ctx.ellipse(x,y,rx,ry,0,0,Math.PI*2);ctx.fill();}
+function text(s,x,y,size=14,color='#fff',align='center',weight=800){ctx.font=`${weight} ${size}px system-ui`;ctx.textAlign=align;ctx.textBaseline='middle';ctx.fillStyle=color;ctx.fillText(s,x,y);}
+function drawCharacter(c,x,y,{outfit='mint',step=0,hat=false,scale=1}={}){
+ c.save();c.translate(x,y);c.scale(scale,scale);
+ const box=(x,y,w,h,r,color)=>{c.fillStyle=color;c.beginPath();c.roundRect(x,y,w,h,r);c.fill();};
+ const oval=(x,y,rx,ry,color)=>{c.fillStyle=color;c.beginPath();c.ellipse(x,y,rx,ry,0,0,Math.PI*2);c.fill();};
+ const line=(points,color,width=2)=>{c.strokeStyle=color;c.lineWidth=width;c.lineCap='round';c.beginPath();points.forEach(([px,py],i)=>i?c.lineTo(px,py):c.moveTo(px,py));c.stroke();};
+ const shape=(points,color)=>{c.fillStyle=color;c.beginPath();points.forEach(([px,py],i)=>i?c.lineTo(px,py):c.moveTo(px,py));c.closePath();c.fill();};
+ const walk=Math.sin(step)*3,fox=outfit==='sunset',dress=outfit==='lavender';
+ // Волосы и рюкзак позади одежды.
+ box(-19,-76,38,49,15,'#634a43');
+ if(!fox){oval(19,-48,9,19,'#634a43');box(14,-60,9,5,2,dress?'#d4b7f0':'#f0c879');}
+ if(!dress&&!fox){box(-23,-43,46,29,9,'#b99769');box(-25,-36,7,17,3,'#d4b07b');box(18,-36,7,17,3,'#d4b07b');}
+ // Ноги, носки и обувь отличаются у каждого образа.
+ box(-12,-22,9,22+walk,4,dress?'#fff7e8':fox?'#565367':'#f0c4a5');
+ box(3,-22,9,22-walk,4,dress?'#fff7e8':fox?'#565367':'#f0c4a5');
+ if(!dress&&!fox){box(-12,-7+walk,9,9,2,'#fff5e6');box(3,-7-walk,9,9,2,'#fff5e6');}
+ const shoe=dress?'#8c71b3':fox?'#f8e6c9':'#3e716c';
+ box(-15,-1+walk,14,8,4,shoe);box(1,-1-walk,14,8,4,shoe);
+ box(-15,5+walk,14,3,1,'#f5efdc');box(1,5-walk,14,3,1,'#f5efdc');
+ if(dress){
+  box(-16,-47,32,23,8,'#b19ad3');
+  shape([[-13,-31],[13,-31],[23,-10],[15,-6],[-16,-6],[-23,-10]],'#a58acb');
+  shape([[-17,-23],[17,-23],[22,-12],[0,-7],[-22,-12]],'#c7b1e4');
+  line([[-20,-10],[-9,-7],[0,-8],[9,-7],[20,-10]],'#f3e7ff',2);
+  box(-4,-44,8,25,2,'#eee0ff');
+  for(const [sx,sy] of [[-13,-16],[12,-12],[0,-27]]){line([[sx-2,sy],[sx+2,sy]],'#fff0a0',1.7);line([[sx,sy-2],[sx,sy+2]],'#fff0a0',1.7);}
+ }else if(fox){
+  box(-17,-48,34,36,10,'#e8a06d');
+  box(-11,-36,22,19,7,'#f8e6c7');
+  line([[0,-45],[0,-18]],'#cb8456',1.5);
+  box(-9,-22,18,5,2,'#e6c9a0');
+ }else{
+  box(-17,-47,34,32,8,'#fff4d9');
+  for(let sy=-39;sy<=-24;sy+=6)box(-15,sy,30,2,0,'#d9bd96');
+  box(-14,-34,28,22,5,'#608f86');
+  box(-12,-45,6,17,2,'#608f86');box(6,-45,6,17,2,'#608f86');
+  box(-6,-29,12,9,2,'#91b6a0');
+  oval(-9,-34,1.7,1.7,'#f1d491');oval(9,-34,1.7,1.7,'#f1d491');
+ }
+ // Руки и мягкие рукава.
+ const sleeve=dress?'#b19ad3':fox?'#e8a06d':'#fff1d5';
+ box(-23,-44,10,23,5,sleeve);box(13,-44,10,23,5,sleeve);
+ oval(-18,-19,4.5,5,'#f3c6aa');oval(18,-19,4.5,5,'#f3c6aa');
+ if(fox){
+  oval(0,-62,24,23,'#e8a06d');
+  shape([[-20,-72],[-20,-91],[-7,-79]],'#e8a06d');shape([[20,-72],[20,-91],[7,-79]],'#e8a06d');
+  shape([[-18,-77],[-18,-86],[-12,-80]],'#f7dec0');shape([[18,-77],[18,-86],[12,-80]],'#f7dec0');
+ }
+ // Лицо, чёлка и небольшие щёки.
+ oval(0,-60,16,18,'#f4cfb2');
+ shape([[-16,-65],[-14,-75],[-4,-79],[8,-77],[16,-69],[4,-69],[-2,-73],[-6,-66]],'#715047');
+ oval(-5.5,-60,1.6,2,'#4e4140');oval(5.5,-60,1.6,2,'#4e4140');
+ oval(-10,-54,3.4,1.6,'#e8a794');oval(10,-54,3.4,1.6,'#e8a794');
+ line([[-2,-52],[0,-51],[2,-52]],'#9d6e60',1.3);
+ if(dress){shape([[11,-74],[17,-78],[16,-71],[20,-67],[13,-68]],'#f8e3a1');}
+ if(hat){c.font='26px "Segoe UI Emoji", "Apple Color Emoji", sans-serif';c.textAlign='center';c.textBaseline='middle';c.fillStyle='#fff';c.fillText('👑',0,fox?-100:-87);}
+ c.restore();
+}
+function drawFountain(x,y){
+ ellipse(x,y+18,60,28,'#789d8c44');
+ ellipse(x,y+7,54,26,'#9bb7b3');
+ ellipse(x,y,54,25,'#e1e8dc');
+ ellipse(x,y-1,45,18,'#62b9ca');
+ ctx.strokeStyle='#b6eff2';ctx.lineWidth=2;
+ ctx.beginPath();ctx.ellipse(x,y-2,29+Math.sin(time*3)*4,10,0,0,Math.PI*2);ctx.stroke();
+ rr(x-9,y-51,18,50,6,'#c0d4d1');
+ ellipse(x,y-50,29,10,'#dce8df');ellipse(x,y-53,26,8,'#8ad1dc');
+ ctx.strokeStyle='#b5f3f4';ctx.lineWidth=4;ctx.lineCap='round';
+ for(const direction of [-1,1]){ctx.beginPath();ctx.moveTo(x,y-56);ctx.quadraticCurveTo(x+direction*22,y-104,x+direction*34,y-27);ctx.stroke();
+  const t=(time*.8+(direction===1?.45:0))%1;ellipse(x+direction*(22*t+12*t*t),y-56-85*t+114*t*t,2.5,4,'#ecffff');}
+ ellipse(x,y-70,4,6,'#ecffff');
+ label('Фонтан желаний',x,y+48,'#d9f9f6');
+}
+function label(s,x,y,color='#fff4cc'){ctx.font='800 12px system-ui';const w=ctx.measureText(s).width+23;rr(x-w/2,y-12,w,24,7,'#214c48e8');text(s,x,y,12,color);}
+function tree(x,y,scale=1){ellipse(x+7,y+13,35*scale,15*scale,'#284d3940');rr(x-8*scale,y-43*scale,16*scale,55*scale,3,'#946c47');rr(x-38*scale,y-94*scale,76*scale,59*scale,6,'#3b7960');rr(x-30*scale,y-110*scale,63*scale,46*scale,5,'#65a375');rr(x-20*scale,y-112*scale,43*scale,11*scale,2,'#8abe7f');}
+function avatar(x,y,z,pet=false){const bob=pet?Math.sin(time*7)*2:Math.sin(player.step)*2;ellipse(x,y+3,pet?15:18,7,'#173f4d40');ctx.save();ctx.translate(x,y-z+bob);if(pet){const icon={cat:'🐈',fox:'🦊',bunny:'🐰'}[data.pet]||'🐈';ctx.font='38px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif';ctx.textAlign='center';ctx.textBaseline='bottom';ctx.fillStyle='#fff';ctx.fillText(icon,0,6);}else{drawCharacter(ctx,0,0,{outfit:data.outfit,step:player.step,hat:data.hat});}ctx.restore();}
+function building(s){const {x,y}=s;ellipse(x,y+18,s.kind==='shop'?67:44,18,'#3d634c33');if(s.kind==='shop'){rr(x-54,y-61,108,75,6,'#e9c68c','#9a7750');rr(x-62,y-84,124,35,5,'#6c9c75');for(let i=0;i<6;i++)rr(x-60+i*20,y-65,18,21,2,i%2?'#f5dfad':'#9fca94');rr(x-43,y-28,86,30,3,'#a37b50');text('🛍',x,y-36,29);label(s.name,x,y+39);}else if(s.kind==='home'){rr(x-49,y-55,98,70,5,'#edcf9b','#ab865c');ctx.fillStyle='#bd7b68';ctx.beginPath();ctx.moveTo(x-63,y-54);ctx.lineTo(x,y-104);ctx.lineTo(x+63,y-54);ctx.closePath();ctx.fill();rr(x-12,y-24,24,39,3,'#8b7053');rr(x-36,y-35,17,18,2,'#a9d8ce');rr(x+19,y-35,17,18,2,'#a9d8ce');if(data.owned.includes('flowers'))for(let i=0;i<5;i++)text('🌻',x-65+i*31,y+30,25);label(s.name,x,y+58);}else if(s.kind==='task'){
+ const ready=routeAvailable(s),passed=s.word<data.routeStep%21;
+ ellipse(x,y+9,29,13,ready?'#f5d37e':'#bed1a3');
+ rr(x-23,y-18,46,25,7,ready?'#f4e6ad':'#d1dcb7',ready?'#b08b4c':'#a2b593');
+ text(s.icon,x,y-34,34);
+ label((passed?'✓ ':ready?'➜ ':'')+(s.word+1)+'. '+s.name,x,y+33,ready?'#fff1ab':'#e6edd7');
+ if(ready){text('▼',x,y-76+Math.sin(time*3)*5,23,'#fff4b1');}
+}else if(s.kind==='chest'){rr(x-25,y-22,50,35,5,data.collected.includes('chest')?'#a98a5b':'#dfa953','#896b40');rr(x-25,y-15,50,6,1,'#795f3f');rr(x-5,y-12,10,13,1,'#ffe79f');if(!data.collected.includes('chest'))text('✦',x,y-42+Math.sin(time*3)*5,24,'#ffeaa1');}else{const unlocked=data[s.kind];if(!unlocked){rr(x-8,y-43,16,84,4,'#8a6b50');text('🔒',x,y-54,26);label(s.kind==='gate1'?'8 остановок → Сад':'16 остановок → Башня',x,y+63);}else{text('⚑',x,y-24,30,'#fff0b1');}}}
+function draw(){ctx.setTransform(dpr,0,0,dpr,0,0);ctx.fillStyle='#79bcc0';ctx.fillRect(0,0,width,height);const scale=width<600?1:1.06;ctx.save();ctx.translate(width/2,height*.55);ctx.scale(scale,scale);ctx.translate(-camera.x,-camera.y);
+ // Небольшие волны остаются в координатах мира и помогают видеть движение.
+ ctx.strokeStyle='#b6dfd880';ctx.lineWidth=2;for(let x=0;x<WORLD.w;x+=100)for(let y=80;y<WORLD.h;y+=90){ctx.beginPath();ctx.moveTo(x+Math.sin(time+x)*4,y);ctx.quadraticCurveTo(x+16,y+7,x+32,y);ctx.stroke();}
+ for(let i=0;i<land.length;i++){const r=land[i];if(i===1&&!data.gate1||i===3&&!data.gate2){rr(r.x,r.y+8,r.w,r.h,8,'#438f99');for(let x=r.x+10;x<r.x+r.w;x+=23)rr(x,r.y+r.h/2-4,13,8,2,'#9ed5cf');continue;}const bridge=i===1||i===3;rr(r.x-5,r.y+22,r.w+10,r.h+8,bridge?5:60,bridge?'#8b7150':'#538d79');rr(r.x,r.y,r.w,r.h,bridge?5:55,bridge?'#c6a275':i===2?'#c1dba0':i===4?'#adc8a8':'#a9cf8e');if(bridge)for(let x=r.x+8;x<r.x+r.w;x+=22)rr(x,r.y+2,3,r.h-4,0,'#967b54');else{rr(r.x+10,r.y+8,r.w-20,10,5,'#d9e8a660');for(let j=0;j<35;j++){const x=r.x+30+(j*137)%(r.w-70),y=r.y+50+(j*211)%(r.h-95);text(j%4?'ˇ':'✿',x,y,j%4?13:17,j%4?'#789f6b':'#f0d7aa');}}}
+ for(const p of platforms){rr(p.x-3,p.y+14,p.w+6,p.h+4,12,'#568c85');rr(p.x,p.y,p.w,p.h,12,'#c4c39a');rr(p.x+6,p.y+4,p.w-12,7,3,'#e3dab1');}
+ // Дорожки и ориентиры площади.
+ rr(382,300,165,650,32,'#d4d5a4');rr(210,610,550,108,25,'#d4d5a4');ellipse(465,505,145,120,'#dcd8ab');ellipse(465,505,127,103,'#e5dfb7');ctx.strokeStyle='#b8bb8c';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(465,505,105,86,0,0,Math.PI*2);ctx.stroke();
+ text('ПЛОЩАДЬ СЛОВ',465,280,16,'#4f765a');text('САД БУКВ',1430,265,19,'#6b855c');text('БАШНЯ ПАМЯТИ',1530,1250,15,'#5a7866');text('↗ СУНДУК НА ПЛАТФОРМАХ',970,832,12,'#e4fff2');
+ for(const c of crystals){if(data.collected.includes(c.id))continue;const bob=Math.sin(time*3+c.x)*4;ellipse(c.x,c.y+5,13,5,'#446f6844');ctx.save();ctx.translate(c.x,c.y-12+bob);ctx.rotate(Math.PI/4);rr(-8,-8,16,16,2,'#fff0a2','#cca25e');rr(-5,-5,6,6,1,'#fffbe1');ctx.restore();}
+ if(active?.kind==='choice'){choiceSpots.forEach((p,i)=>{const selected=Math.abs(player.x-p.x)<=36&&player.y>=p.y-24&&player.y<=p.y+36;rr(p.x-36,p.y-24,72,60,10,selected?'#f7ce77':'#e5e8c6',selected?'#b7863e':'#a5b487');rr(p.x-32,p.y-22,64,7,4,'#fff6d780');text(active.options[i].letter,p.x,p.y+8,30,'#486647');});}
+ const slime={x:1220+Math.sin(time*.8)*120,y:650};ellipse(slime.x,slime.y+8,23,9,'#4e694544');rr(slime.x-20,slime.y-18,40,28,11,'#edab78');text('• •',slime.x,slime.y-7,13,'#885f43');text('ПЕРЕПРЫГНИ',slime.x,slime.y-39,9,'#6d7a54');
+ const visibleStations=stations.filter(s=>active?.kind!=='choice'||s.kind!=='task'||s.region!==stops.find(p=>p.id===active.station)?.region);
+ const objects=[...trees.map(t=>({y:t.y,draw:()=>tree(t.x,t.y)})),...visibleStations.map(s=>({y:s.kind==='task'?s.y-25:s.y+10,draw:()=>building(s)})),...(data.owned.includes('fountain')?[{y:1032,draw:()=>drawFountain(790,1005)}]:[]),{y:player.y,draw:()=>avatar(player.x,player.y,player.z)},{y:petPos.y,draw:()=>avatar(petPos.x,petPos.y,0,true)}];objects.sort((a,b)=>a.y-b.y).forEach(o=>o.draw());
+ for(const p of particles){ctx.globalAlpha=Math.max(0,p.life/.7);rr(p.x-3,p.y-3,6,6,1,p.color);}ctx.globalAlpha=1;
+ if(target){ctx.strokeStyle='#fef5bf';ctx.lineWidth=3;ctx.beginPath();ctx.ellipse(target.x,target.y,12,6,0,0,Math.PI*2);ctx.stroke();}
+ // Направление к ближайшей цели, если она за пределами экрана.
+ const aim=routeAim();const dx=aim.x-camera.x,dy=aim.y-camera.y;if(Math.abs(dx)>width/scale*.42||Math.abs(dy)>height/scale*.37){const angle=Math.atan2(dy,dx),dist=Math.min(width/scale*.38,height/scale*.33);ctx.save();ctx.translate(camera.x+Math.cos(angle)*dist,camera.y+Math.sin(angle)*dist);ctx.rotate(angle);ctx.fillStyle='#fff4b9';ctx.beginPath();ctx.moveTo(13,0);ctx.lineTo(-9,-9);ctx.lineTo(-9,9);ctx.closePath();ctx.fill();ctx.restore();}
+ ctx.restore();}
+function tick(now){const dt=Math.min((now-last)/1000||.016,.035);last=now;time+=dt;if(!modalOpen){let mx=(keys.ArrowRight||keys.d||keys.D?1:0)-(keys.ArrowLeft||keys.a||keys.A?1:0)+joy.x,my=(keys.ArrowDown||keys.s||keys.S?1:0)-(keys.ArrowUp||keys.w||keys.W?1:0)+joy.y;if(target&&!mx&&!my){const dx=target.x-player.x,dy=target.y-player.y,dist=Math.hypot(dx,dy);if(dist<8)target=null;else{mx=dx/dist;my=dy/dist;}}else if(mx||my)target=null;const len=Math.hypot(mx,my);if(len>0){mx/=Math.max(1,len);my/=Math.max(1,len);const speed=player.z>0?255:205,nx=player.x+mx*speed*dt,ny=player.y+my*speed*dt;if(!moveBlocked(nx,player.y))player.x=nx;if(!moveBlocked(player.x,ny))player.y=ny;player.step+=dt*13;wasMoving=true;}else if(wasMoving){wasMoving=false;save();}if(player.z>0||player.vz>0){player.z+=player.vz*dt;player.vz-=960*dt;if(player.z<=0){player.z=0;player.vz=0;}}if(player.z===0){if(!onLand(player.x,player.y))respawn();else if(land.some((r,i)=>i!==1&&i!==3&&pointIn(player,r,45))){player.safeX=player.x;player.safeY=player.y;}}
+ const slimeX=1220+Math.sin(time*.8)*120;if(player.z<28&&Math.hypot(player.x-slimeX,player.y-650)<37){respawn();toast('Слизень щекочется! Перепрыгни его пробелом или кнопкой ↑.');}
+ for(const c of crystals)if(!data.collected.includes(c.id)&&Math.hypot(player.x-c.x,player.y-c.y)<28){data.collected.push(c.id);reward(2,c.x,c.y);toast('+2 монеты ◆');}
+ petPos.x+=(player.x-30-petPos.x)*Math.min(1,dt*3);petPos.y+=(player.y+23-petPos.y)*Math.min(1,dt*3);
+ }
+ updateActionUI();camera.x+=(player.x-camera.x)*Math.min(1,dt*7);camera.y+=(player.y-25-camera.y)*Math.min(1,dt*7);particles=particles.filter(p=>{p.life-=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=220*dt;return p.life>0;});if(time>toastUntil)$('toast').hidden=true;draw();requestAnimationFrame(tick);}
+function resetStick(){joy={x:0,y:0};$('stick').style.transform='';}
+let joyPointer=null;
+$('joystick').addEventListener('pointerdown',e=>{if(modalOpen)return;joyPointer=e.pointerId;e.currentTarget.setPointerCapture(e.pointerId);updateJoy(e);});
+function updateJoy(e){if(joyPointer!==e.pointerId)return;const r=$('joystick').getBoundingClientRect(),radius=(r.width-48)/2-3,dx=e.clientX-r.left-r.width/2,dy=e.clientY-r.top-r.height/2,len=Math.hypot(dx,dy),f=Math.min(1,radius/(len||1));joy={x:dx*f/radius,y:dy*f/radius};$('stick').style.transform=`translate(${dx*f}px,${dy*f}px)`;}
+$('joystick').addEventListener('pointermove',updateJoy);for(const type of ['pointerup','pointercancel','lostpointercapture'])$('joystick').addEventListener(type,()=>{joyPointer=null;resetStick();});
+addEventListener('keydown',e=>{if(modalOpen){if(e.key==='Escape'){e.preventDefault();closePanel();}if(e.key==='Tab'){const els=[...$('panel').querySelectorAll('button:not(:disabled),input')];const first=els[0],last=els[els.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last?.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus();}}return;}if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key))e.preventDefault();keys[e.key]=true;if(!e.repeat){if(e.key===' ')jump();if(e.key.toLowerCase()==='e')interact();}});
+addEventListener('keyup',e=>{keys[e.key]=false;});addEventListener('blur',()=>{keys={};resetStick();target=null;save();});document.addEventListener('visibilitychange',()=>{if(document.hidden){keys={};resetStick();target=null;save();}});
+canvas.addEventListener('pointerdown',e=>{if(modalOpen)return;const scale=width<600?1:1.06;target={x:(e.clientX-width/2)/scale+camera.x,y:(e.clientY-height*.55)/scale+camera.y};});
+$('jump').onclick=jump;$('interact').onclick=interact;$('book').onclick=()=>{if(active){toast('Закончи задание или нажми «Позже».');return;}notebook();};$('help').onclick=()=>{if(active){toast('Закончи задание или нажми «Позже».');return;}help();};
+if(Number.isFinite(data.x)&&Number.isFinite(data.y)&&onLand(data.x,data.y)&&!moveBlocked(data.x,data.y)){player.x=data.x;player.y=data.y;player.safeX=data.x;player.safeY=data.y;}petPos={x:player.x-30,y:player.y+23};camera={x:player.x,y:player.y-25};save();requestAnimationFrame(tick);if(!data.intro)welcome();
+</script>
+</body>
+</html>
